@@ -55,7 +55,7 @@ def elements_view(request):
 def get_excel(request):
     elements = UserRequest.objects.all().values_list('track_number', 'fullname', 'passport_series', 'passport_number', 'pinfl', 'phone_number')
     save_to_excel(
-        filename=f'app/static/test.xlsx',
+        filename=settings.BASE_DIR / 'app/static/test.xlsx',
         data=elements
     )
 
