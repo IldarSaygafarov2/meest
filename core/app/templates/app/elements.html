@@ -142,7 +142,7 @@
                 {% if i == elements.number %}
                 <li class="page-item active"><a class="page-link">{{ i }}</a></li>
                 {% else %}
-                <li class="page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                 {% endif %}
                 {% endfor %}
                 {% if elements.has_next %}
