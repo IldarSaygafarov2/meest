@@ -200,6 +200,7 @@ li {
 .confirm__data p {
   font-size: 16px;
   color: #000;
+  margin-bottom: 0;
 }
 
 .form__btn {
@@ -259,4 +260,60 @@ li {
   display: flex;
   flex-direction: column;
   gap: 5px  ;
+}
+
+.modal {
+    width: 300px;
+    height: 300px;
+    background: rgb(255, 255, 255,1);
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 21px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 21px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 21px -2px rgba(34, 60, 80, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    z-index: -5;
+    transition: .5s;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+.modal__btn {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.wrapper{
+    transition: .5s ;
+}
+
+.wrapper.active{
+    filter: blur(5px);
+}
+
+.modal__data-descr {
+    font-size: 20px;
+}
+
+.modal__btn img {
+    max-width: 100%;
+}
+
+.modal.active {
+    z-index: 999;
+    opacity: 1;
 }

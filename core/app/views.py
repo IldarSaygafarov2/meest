@@ -6,6 +6,7 @@ from .forms import UserRequestForm
 from .models import UserRequest
 from .utils import save_to_excel
 from openpyxl import load_workbook
+from django.contrib import messages
 
 
 def home(request):
@@ -13,6 +14,7 @@ def home(request):
         form = UserRequestForm(data=request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Данные о получателе приняты")
             return redirect('home')
     else:
         form = UserRequestForm()

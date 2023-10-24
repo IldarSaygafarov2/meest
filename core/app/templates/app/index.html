@@ -2,116 +2,144 @@
 
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'assets/style/style.css' %}" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>MEEST</title>
-  </head>
-  <body>
-    <div class="wrapper">
-      <!--  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/style/style.css' %}"/>
 
-      <main class="main">
-        <section class="data">
-          <div class="container data-content">
-            <div class="data-text">
-              <h1 class="data-text-title">
-                Для прохождения таможенного контроля просим Вас заполнить данную
-                анкету в связи с постановлением Кабинета Министров РУз и
-                Кабинета Президента РУз.
-              </h1>
-              <h2 class="data-text-subtitle">
-                Постановление Кабинета Министров Республики Узбекистан № 767 от
-                21.12.2021 г. ОБ УТВЕРЖДЕНИИ ПОЛОЖЕНИЯ О ПОРЯДКЕ ПРОВЕДЕНИЯ
-                ТАМОЖЕННОГО КОНТРОЛЯ И ОФОРМЛЕНИЯ МЕЖДУНАРОДНЫХ ПОЧТОВЫХ И
-                КУРЬЕРСКИХ ОТПРАВЛЕНИЙ
-              </h2>
-              <h2 class="data-text-subtitle">
-                Постановление Президента Республики Узбекистан ПП-3873 от 19.07.2018
-                «О МЕРАХ ПО ОБЕСПЕЧЕНИЮ КОНТРОЛЯ ТОВАРОВ, ПОСТУПАЮЩИХ НА ТЕРРИТОРИЮ РЕСПУБЛИКИ УЗБЕКИСТАН 
-                В АДРЕС ФИЗИЧЕСКИХ ЛИЦ В МЕЖДУНАРОДНЫХ ПОЧТОВЫХ И КУРЬЕРСКИХ ОТПРАВЛЕНИЯХ»
-              </h2>
-              <h2 class="data-text-subtitle">
-                Перечень сведений, представляемых операторами и провайдерами почтовой связи органам государственной таможенной службы 
-                при предварительном электронном информировании о товарах, поступающих в адрес физических лиц в международных 
-                курьерских отправлениях
-              </h2>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+</head>
+<body>
 
-              <ol class="data-text-list">
-                 <li>1. Фамилия, имя и отчество получателя.</li>
-                 <li>2. Адрес получателя.</li>
-                 <li>3. Серия и номер паспорта или идентификационной ID-карты либо ПИН ФЛ получателя.</li>
-                 <li>4. Наименование оператора или провайдера почтовой связи.</li>
-                 <li>5. Страна отправителя.</li>
-                 <li>6. Описание отправления (товаров в посылке).</li>
-                 <li>7. Стоимость отправления (товаров в посылке).</li>
-              </ol>
-              <h2 class="data-text-subtitle">
-                Если у Вас появились какие-либо вопросы или Вы указали неверные данные, 
-                пожалуйста, свяжитесь с нами по номеру: <a href="tel::(55) 501-3434 ">(55) 501-3434 </a>
-              </h2>
-            </div>
-            <h2 class="data-content__title">Введите данные:</h2>
-            <form action="" class="data-content__form" method="post">
-                {% csrf_token %}
-              <div class="data-content__form-item">
-                <div class="">
-                  <p>Введите номер для отслеживания посылки:</p>
-                  <span>(Трек номер)*</span>
-                </div>
-                  {{ form.track_number }}
-              </div>
-              <div class="data-content__form-item">
-                <div class="">
-                  <p>Ф.И.О получателя*</p>
-                  <span>(как в заказе)</span>
-                </div>
-                  {{ form.fullname }}
-              </div>
-              <div class="data-content__form-item">
-                <div class="">
-                  <p>Серия и номер пасспорта /</p>
-                  <span>ID-карты*</span>
-                </div>
-                <div class="passport__data">
-                    {{ form.passport_series }}
-                    {{ form.passport_number }}
-                </div>
-              </div>
-              <div class="data-content__form-item">
-                <div class="">
-                  <p>Введите ПИНФЛ*</p>
-                  <span></span>
-                </div>
-                  {{ form.pinfl }}
-{#                <input type="text" placeholder="12345678901234" required />#}
-              </div>
-              <div class="data-content__form-item">
-                <div class="">
-                  <p>Введите номер телефона получателя</p>
-                  <span>(тот, что указан в заказе)*</span>
-                </div>
-                  {{ form.phone_number }}
-{#                <input type="phone" placeholder="+998900000000" required />#}
-              </div>
-              <!--  -->
+{% if messages %}
 
-              <div class="confirm__data">
-                <input class="confirm__data-input" type="checkbox" />
-                <p>
-                  Я подтверждаю свое согласие на обработку персональных данных
-                </p>
-              </div>
-
-              <button class="form__btn" disabled><span>Сдать</span></button>
-            </form>
-          </div>
-        </section>
-      </main>
+    <div class="modal active">
+        <button class="modal__btn">
+<!--            <img src="{% static 'close.svg' %}" alt="">-->
+            X
+        </button>
+        <!--  -->
+        <div class="modal__data">
+            {% for message in messages %}
+            <p class="modal__data-descr">
+                {{ message }}
+            </p>
+            {% endfor %}
+        </div>
     </div>
 
-    <script>
+{% endif %}
+<div class="wrapper {% if messages %}active{% endif %}" >
+    <!--  -->
+
+    <main class="main">
+        <section class="data">
+            <div class="container data-content">
+                <div class="data-text">
+                    <h1 class="data-text-title">
+                        Для прохождения таможенного контроля просим Вас заполнить данную
+                        анкету в связи с постановлением Кабинета Министров РУз и
+                        Кабинета Президента РУз.
+                    </h1>
+                    <h2 class="data-text-subtitle">
+                        Постановление Кабинета Министров Республики Узбекистан № 767 от
+                        21.12.2021 г. ОБ УТВЕРЖДЕНИИ ПОЛОЖЕНИЯ О ПОРЯДКЕ ПРОВЕДЕНИЯ
+                        ТАМОЖЕННОГО КОНТРОЛЯ И ОФОРМЛЕНИЯ МЕЖДУНАРОДНЫХ ПОЧТОВЫХ И
+                        КУРЬЕРСКИХ ОТПРАВЛЕНИЙ
+                    </h2>
+                    <h2 class="data-text-subtitle">
+                        Постановление Президента Республики Узбекистан ПП-3873 от 19.07.2018
+                        «О МЕРАХ ПО ОБЕСПЕЧЕНИЮ КОНТРОЛЯ ТОВАРОВ, ПОСТУПАЮЩИХ НА ТЕРРИТОРИЮ РЕСПУБЛИКИ УЗБЕКИСТАН
+                        В АДРЕС ФИЗИЧЕСКИХ ЛИЦ В МЕЖДУНАРОДНЫХ ПОЧТОВЫХ И КУРЬЕРСКИХ ОТПРАВЛЕНИЯХ»
+                    </h2>
+                    <h2 class="data-text-subtitle">
+                        Перечень сведений, представляемых операторами и провайдерами почтовой связи органам
+                        государственной таможенной службы
+                        при предварительном электронном информировании о товарах, поступающих в адрес физических лиц в
+                        международных
+                        курьерских отправлениях
+                    </h2>
+
+                    <ol class="data-text-list">
+                        <li>1. Фамилия, имя и отчество получателя.</li>
+                        <li>2. Адрес получателя.</li>
+                        <li>3. Серия и номер паспорта или идентификационной ID-карты либо ПИН ФЛ получателя.</li>
+                        <li>4. Наименование оператора или провайдера почтовой связи.</li>
+                        <li>5. Страна отправителя.</li>
+                        <li>6. Описание отправления (товаров в посылке).</li>
+                        <li>7. Стоимость отправления (товаров в посылке).</li>
+                    </ol>
+                    <h2 class="data-text-subtitle">
+                        Если у Вас появились какие-либо вопросы или Вы указали неверные данные,
+                        пожалуйста, свяжитесь с нами по номеру: <a href="tel::(55) 501-3434 ">(55) 501-3434 </a>
+                    </h2>
+                </div>
+                <h2 class="data-content__title">Введите данные:</h2>
+                <form action="" class="data-content__form" method="post">
+                    {% csrf_token %}
+                    <div class="data-content__form-item">
+                        <div class="">
+                            <p>Введите номер для отслеживания посылки:</p>
+                            <span>(Трек номер)*</span>
+                        </div>
+                        {{ form.track_number }}
+                    </div>
+                    <div class="data-content__form-item">
+                        <div class="">
+                            <p>Ф.И.О получателя*</p>
+                            <span>(как в заказе)</span>
+                        </div>
+                        {{ form.fullname }}
+                    </div>
+                    <div class="data-content__form-item">
+                        <div class="">
+                            <p>Серия и номер пасспорта /</p>
+                            <span>ID-карты*</span>
+                        </div>
+                        <div class="passport__data">
+                            {{ form.passport_series }}
+                            {{ form.passport_number }}
+                        </div>
+                    </div>
+                    <div class="data-content__form-item">
+                        <div class="">
+                            <p>Введите ПИНФЛ*</p>
+                            <span></span>
+                        </div>
+                        {{ form.pinfl }}
+
+                    </div>
+                    <div class="data-content__form-item">
+                        <div class="">
+                            <p>Введите номер телефона получателя</p>
+                            <span>(тот, что указан в заказе)*</span>
+                        </div>
+                        {{ form.phone_number }}
+                    </div>
+                    <!--  -->
+
+                    <div class="confirm__data">
+                        <input class="confirm__data-input" type="checkbox"/>
+                        <p>
+                            Я подтверждаю свое согласие на обработку персональных данных
+                        </p>
+                    </div>
+
+                    <button class="form__btn" disabled><span>Сдать</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+
+
+
+
+<script>
       const confirmDataCheckbox = document.querySelector(
         ".confirm__data-input"
       );
@@ -128,6 +156,16 @@
           formBtn.setAttribute("disabled", true);
         }
       });
-    </script>
-  </body>
+        const modal = document.querySelector('.modal');
+        const button = document.querySelector('.modal__btn');
+        const wrapper = document.querySelector('.wrapper');
+
+        button.addEventListener('click', () => {
+            modal.classList.toggle('active');
+            wrapper.classList.toggle('active');
+        });
+
+</script>
+
+</body>
 </html>
