@@ -65,8 +65,10 @@ def get_excel(request):
         wb = load_workbook(file)
         sheet_obj = wb.active
         values = []
-        for i in range(1, sheet_obj.max_column + 1):
-            cell_obj = sheet_obj.cell(row=1, column=i)
+        print(sheet_obj.max_row)
+
+        for i in range(1, sheet_obj.max_row + 1):
+            cell_obj = sheet_obj.cell(row=i, column=1)
             values.append(cell_obj.value)
 
         result = []

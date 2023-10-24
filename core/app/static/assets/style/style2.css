@@ -79,6 +79,10 @@ body {
   border-color: #5d5fef;
 }
 
+.wrapper__nav-item input::placeholder {
+    font-size: 11px;
+}
+
 .wrapper__nav-item button {
   border-radius: 0 5px 5px 0;
   border: 1px solid #dfdfdf;
