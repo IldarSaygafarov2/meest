@@ -151,6 +151,7 @@ body {
 .wrapper .wrapper__list-item-data {
   font-size: 18px;
   margin-top: 10px;
+  margin-bottom: 0;
   color: #878790;
   display: flex;
   justify-content: space-between;
