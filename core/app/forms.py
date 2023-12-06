@@ -26,12 +26,15 @@ class UserRequestForm(forms.ModelForm):
                 'required': True,
                 'placeholder': 'AA',
                 'class': 'passport__data-seria',
-                'oninput': "this.value = this.value.toUpperCase()"
+                'pattern': r'[A-Z]',
+                'oninput': "this.value = this.value.toUpperCase()",
+                'title': 'Символы должны быть написаны на латинице'
             }),
             "passport_number": forms.TextInput(attrs={
                 'required': True,
                 'placeholder': '1234567',
-                'class': 'passport__data-number'
+                'class': 'passport__data-number',
+                'pattern': '[0-9]{12}',
             }),
             "pinfl": forms.TextInput(attrs={
                 'required': True,
