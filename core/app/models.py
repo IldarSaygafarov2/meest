@@ -6,7 +6,7 @@ class UserRequest(models.Model):
     fullname = models.CharField(verbose_name="Полное имя", max_length=100)
     passport_series = models.CharField(verbose_name="Серия пасопрта", max_length=3)
     passport_number = models.CharField(verbose_name="Номер паспорта", max_length=10)
-    pinfl = models.CharField(verbose_name="ПИНФЛ", max_length=50)
+    pinfl = models.CharField(verbose_name="ПИНФЛ", max_length=14)
     phone_number = models.CharField(max_length=15, verbose_name="Номер телефона")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 

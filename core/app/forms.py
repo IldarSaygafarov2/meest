@@ -16,7 +16,7 @@ class UserRequestForm(forms.ModelForm):
         widgets = {
             "track_number": forms.TextInput(attrs={
                 'required': True,
-                'placeholder': '123456'
+                'placeholder': 'ACV000000000'
             }),
             "fullname": forms.TextInput(attrs={
                 'required': True,
@@ -25,7 +25,8 @@ class UserRequestForm(forms.ModelForm):
             "passport_series": forms.TextInput(attrs={
                 'required': True,
                 'placeholder': 'AA',
-                'class': 'passport__data-seria'
+                'class': 'passport__data-seria',
+                'oninput': "this.value = this.value.toUpperCase()"
             }),
             "passport_number": forms.TextInput(attrs={
                 'required': True,
@@ -38,6 +39,6 @@ class UserRequestForm(forms.ModelForm):
             }),
             "phone_number": forms.TextInput(attrs={
                 'required': True,
-                'placeholder': '+998900000000',
+                'placeholder': '998900000000',
             }),
         }
