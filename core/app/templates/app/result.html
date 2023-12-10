@@ -17,20 +17,29 @@
 
 <div class="wrapper">
     <div class="container" style="text-align: center">
+        {% if 'save' not in request.path %}
 
-        <form action="" enctype="multipart/form-data" class="mb-5" method="post">
-            {% csrf_token %}
-            <div>
-                <p>Добавьте эксель файл со списком трек-номеров анкеты которых вы хотите получить</p>
-                <input type="file" class="form-control" name="file-input">
-            </div>
-            <button class="exsel-btn mt-3" type="submit">Отправить</button>
-        </form>
+            <form action="" enctype="multipart/form-data" class="mb-5" method="post">
+                {% csrf_token %}
+                <div>
+                    <p>Добавьте эксель файл со списком трек-номеров анкеты которых вы хотите получить</p>
+                    <input type="file" class="form-control" name="file-input">
+                </div>
+                <button class="exsel-btn mt-3" type="submit">Отправить</button>
+            </form>
 
-        <a href="{% static 'test.xlsx' %}" download class="exsel-btn">Скачать файл</a>
-        <a href="{% url 'elements' %}" class="exsel-btn">
-            Обратно к списку
-        </a>
+            <a href="{% static 'test.xlsx' %}" download class="exsel-btn">Скачать файл</a>
+            <a href="{% url 'elements' %}" class="exsel-btn">
+                Обратно к списку
+            </a>
+        {% else %}
+            <a href="{% static 'datetime.xlsx' %}" download class="exsel-btn">Скачать файл</a>
+            <a href="{% url 'elements' %}" class="exsel-btn">
+                Обратно к списку
+            </a>
+        {% endif %}
+
+
     </div>
 </div>
 

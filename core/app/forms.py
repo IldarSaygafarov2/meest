@@ -26,7 +26,8 @@ class UserRequestForm(forms.ModelForm):
                 'required': True,
                 'placeholder': 'AA',
                 'class': 'passport__data-seria',
-                'pattern': r'[A-Z]',
+                'id': 'passport-seria',
+                # 'pattern': r'[A-Z]',
                 'oninput': "this.value = this.value.toUpperCase()",
                 'title': 'Символы должны быть написаны на латинице'
             }),
@@ -34,7 +35,7 @@ class UserRequestForm(forms.ModelForm):
                 'required': True,
                 'placeholder': '1234567',
                 'class': 'passport__data-number',
-                'pattern': '[0-9]{12}',
+                # 'pattern': '[0-9]{12}',
             }),
             "pinfl": forms.TextInput(attrs={
                 'required': True,

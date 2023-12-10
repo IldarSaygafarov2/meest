@@ -1,11 +1,13 @@
 from django.conf import settings
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from openpyxl import load_workbook, Workbook
 
 from .forms import UserRequestForm
 from .models import UserRequest
-from openpyxl import load_workbook, Workbook
-from django.contrib import messages
+
+import pandas as pd
 
 
 def home(request):
@@ -45,16 +47,23 @@ def elements_view(request):
     elif pinfl:
         elements = UserRequest.objects.filter(pinfl__iregex=pinfl)
     elif date_from and date_to:
-        elements = UserRequest.objects.filter(created_at__gt=date_from, created_at__lt=date_to)
+        elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to)
     else:
         elements = UserRequest.objects.all()
 
-    qs = Paginator(elements, 30)
+    qs = Paginator(elements, 2)
     page = request.GET.get('page')
     elements = qs.get_page(page)
 
     context = {
-        "elements": elements
+        "elements": elements,
+        "date_from": date_from if date_from else '',
+        "date_to": date_to if date_to else '',
+        "phone_number": phone_number if phone_number else '',
+        "pinfl": pinfl if pinfl else '',
+        "query_fullname": query_fullname if query_fullname else '',
+        "passport_series": passport_series if passport_series else '',
+        "track_number": track_number if track_number else '',
     }
 
     return render(request, "app/elements.html", context)
@@ -94,5 +103,18 @@ def get_excel(request):
                                                          'passport_number', 'pinfl', 'phone_number')
         print(elements)
 
+    return render(request, 'app/result.html')
+
+
+def save_elements_by_datetime(request, date_from='', date_to=''):
+    elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to).values_list(
+        'track_number', 'fullname', 'passport_series',
+        'passport_number', 'pinfl', 'phone_number')
+    print()
+
+    df = pd.DataFrame(list(elements),
+                      columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
+                      )
+    df.to_excel(settings.BASE_DIR / 'app/static/datetime.xlsx')
 
     return render(request, 'app/result.html')

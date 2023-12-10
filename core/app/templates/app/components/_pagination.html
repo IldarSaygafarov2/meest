@@ -1,0 +1,50 @@
+{% if elements.has_other_pages %}
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-5">
+
+        <ul class="pagination">
+            {% if elements.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                            {% if 'date_from' in request.GET and 'date_to' in request.GET %}
+                       href="?page={{ elements.previous_page_number }}&date_from={{ date_from }}&date_to={{ date_to }}"
+                            {% else %}
+                       href="?page={{ elements.previous_page_number }}"
+                            {% endif %}
+                       aria-label="Previous"
+                    >
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% for i in elements.paginator.page_range %}
+                {% if i == elements.number %}
+                    <li class="page-item active"><a class="page-link">{{ i }}</a></li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link"
+                                {% if 'date_from' in request.GET and 'date_to' in request.GET %}
+                           href="?page={{ i }}&date_from={{ date_from }}&date_to={{ date_to }}"
+                                {% else %}
+                           href="?page={{ i }}"
+                                {% endif %}>
+                            {{ i }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if elements.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                            {% if 'date_from' in request.GET and 'date_to' in request.GET %}
+                       href="?page={{ elements.next_page_number }}&date_from={{ date_from }}&date_to={{ date_to }}"
+                            {% else %}
+                       href="?page={{ elements.next_page_number }}"
+                            {% endif %}
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

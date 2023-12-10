@@ -10,7 +10,9 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'assets/style/style.css' %}"/>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+            integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+            crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -23,15 +25,15 @@
         <!--  -->
         <div class="modal__data">
             {% for message in messages %}
-            <p class="modal__data-descr">
-                {{ message }}
-            </p>
+                <p class="modal__data-descr">
+                    {{ message }}
+                </p>
             {% endfor %}
         </div>
     </div>
 
 {% endif %}
-<div class="wrapper {% if messages %}active{% endif %}" >
+<div class="wrapper {% if messages %}active{% endif %}">
     <!--  -->
 
     <main class="main">
@@ -135,34 +137,44 @@
 </div>
 
 
-
-
-
 <script>
-      const confirmDataCheckbox = document.querySelector(
-        ".confirm__data-input"
-      );
-      const formBtn = document.querySelector(".form__btn");
-      let isChecked = false;
+    const russianInput = document.getElementById('passport-seria');
+    console.log(russianInput)
 
-      confirmDataCheckbox.addEventListener("click", () => {
+    russianInput.addEventListener('input', function (event) {
+        const inputValue = event.target.value;
+        const latinOnly = /^[^\u0400-\u04FF]*$/;
+
+        if (!latinOnly.test(inputValue)) {
+            event.target.value = inputValue.replace(/[а-яА-ЯёЁ]/g, '');
+        }
+    });
+
+    const confirmDataCheckbox = document.querySelector(
+        ".confirm__data-input"
+    );
+    const formBtn = document.querySelector(".form__btn");
+    let isChecked = false;
+
+    confirmDataCheckbox.addEventListener("click", () => {
         isChecked = !isChecked;
         confirmDataCheckbox.checked = isChecked;
 
         if (isChecked) {
-          formBtn.removeAttribute("disabled");
+            formBtn.removeAttribute("disabled");
         } else {
-          formBtn.setAttribute("disabled", true);
+            formBtn.setAttribute("disabled", true);
         }
-      });
-        const modal = document.querySelector('.modal');
-        const button = document.querySelector('.modal__btn');
-        const wrapper = document.querySelector('.wrapper');
+    });
+    const modal = document.querySelector('.modal');
+    const button = document.querySelector('.modal__btn');
+    const wrapper = document.querySelector('.wrapper');
 
-        button.addEventListener('click', () => {
-            modal.classList.toggle('active');
-            wrapper.classList.toggle('active');
-        });
+    button.addEventListener('click', () => {
+        modal.classList.toggle('active');
+        wrapper.classList.toggle('active');
+    });
+
 
 </script>
 
