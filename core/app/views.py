@@ -82,18 +82,33 @@ def get_excel(request):
         result_file = load_workbook(settings.BASE_DIR / 'app/static/test.xlsx')
         result_file_ws = result_file.active
 
+        # print(result_file_ws)
+
         for i in range(1, sheet_obj.max_row + 1):
             cell_obj = sheet_obj.cell(row=i, column=1)
-            values.append(cell_obj.value)
+            cell_obj2 = sheet_obj.cell(row=i, column=2)
+            values.append((cell_obj.value, cell_obj2.value))
 
         for value in values:
-            elements = UserRequest.objects.filter(track_number=value).values_list(
-                'track_number', 'fullname', 'passport_series',
-                'passport_number', 'pinfl', 'phone_number').first()
+            elements = UserRequest.objects.filter(track_number=value[0])
 
+            if elements.exists():
+                elements = elements.values_list(
+                    'track_number', 'fullname', 'passport_series',
+                    'passport_number', 'pinfl', 'phone_number').first()
+                print('by track number', elements)
+            else:
+                elements = UserRequest.objects.filter(phone_number=value[1]).values_list(
+                    'track_number', 'fullname', 'passport_series',
+                    'passport_number', 'pinfl', 'phone_number').first()
+                print('by phone number', elements)
+
+            print('final elements', elements)
             if elements is None:
-                result_file_ws.append((value,))
+                result_file_ws.append((value[0], value[1]))
                 continue
+            else:
+                pass
 
             result_file_ws.append(elements)
 
@@ -101,7 +116,7 @@ def get_excel(request):
     else:
         elements = UserRequest.objects.all().values_list('track_number', 'fullname', 'passport_series',
                                                          'passport_number', 'pinfl', 'phone_number')
-        print(elements)
+        # print(elements)
 
     return render(request, 'app/result.html')
 
@@ -110,7 +125,6 @@ def save_elements_by_datetime(request, date_from='', date_to=''):
     elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to).values_list(
         'track_number', 'fullname', 'passport_series',
         'passport_number', 'pinfl', 'phone_number')
-    print()
 
     df = pd.DataFrame(list(elements),
                       columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
