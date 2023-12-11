@@ -16,7 +16,9 @@ class UserRequestForm(forms.ModelForm):
         widgets = {
             "track_number": forms.TextInput(attrs={
                 'required': True,
-                'placeholder': 'ACV000000000'
+                'placeholder': 'ACV000000000',
+                'id': 'track-number',
+                'oninput': "this.value = this.value.toUpperCase()",
             }),
             "fullname": forms.TextInput(attrs={
                 'required': True,
@@ -27,7 +29,6 @@ class UserRequestForm(forms.ModelForm):
                 'placeholder': 'AA',
                 'class': 'passport__data-seria',
                 'id': 'passport-seria',
-                # 'pattern': r'[A-Z]',
                 'oninput': "this.value = this.value.toUpperCase()",
                 'title': 'Символы должны быть написаны на латинице'
             }),

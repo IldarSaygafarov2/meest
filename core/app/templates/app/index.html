@@ -139,9 +139,18 @@
 
 <script>
     const russianInput = document.getElementById('passport-seria');
-    console.log(russianInput)
+    const trackNumberInput = document.getElementById('track-number');
 
     russianInput.addEventListener('input', function (event) {
+        const inputValue = event.target.value;
+        const latinOnly = /^[^\u0400-\u04FF]*$/;
+
+        if (!latinOnly.test(inputValue)) {
+            event.target.value = inputValue.replace(/[а-яА-ЯёЁ]/g, '');
+        }
+    });
+
+    trackNumberInput.addEventListener('input', function (event) {
         const inputValue = event.target.value;
         const latinOnly = /^[^\u0400-\u04FF]*$/;
 
