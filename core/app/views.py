@@ -51,7 +51,7 @@ def elements_view(request):
     else:
         elements = UserRequest.objects.all()
 
-    qs = Paginator(elements, 2)
+    qs = Paginator(elements, 30)
     page = request.GET.get('page')
     elements = qs.get_page(page)
 
