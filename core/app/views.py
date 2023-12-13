@@ -1,13 +1,13 @@
+import pandas as pd
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from django.utils import datetime_safe
 from openpyxl import load_workbook, Workbook
 
 from .forms import UserRequestForm
 from .models import UserRequest
-
-import pandas as pd
 
 
 def home(request):
@@ -58,7 +58,7 @@ def elements_view(request):
     context = {
         "elements": elements,
         "date_from": date_from if date_from else '',
-        "date_to": date_to if date_to else '',
+        "date_to": date_to if date_to else datetime_safe.datetime.now().date(),
         "phone_number": phone_number if phone_number else '',
         "pinfl": pinfl if pinfl else '',
         "query_fullname": query_fullname if query_fullname else '',
