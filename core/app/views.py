@@ -94,13 +94,13 @@ def get_excel(request):
 
             if elements.exists():
                 elements = elements.values_list(
-                    'track_number', 'fullname', 'passport_series',
-                    'passport_number', 'pinfl', 'phone_number').first()
+                    'track_number', 'phone_number', 'passport_series',
+                    'passport_number', 'pinfl', 'fullname').first()
                 print('by track number', elements)
             else:
                 elements = UserRequest.objects.filter(phone_number=value[1]).values_list(
-                    'track_number', 'fullname', 'passport_series',
-                    'passport_number', 'pinfl', 'phone_number').first()
+                    'track_number', 'phone_number', 'passport_series',
+                    'passport_number', 'pinfl', 'fullname').first()
                 print('by phone number', elements)
 
             print('final elements', elements)
