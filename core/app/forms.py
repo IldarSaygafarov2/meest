@@ -45,6 +45,5 @@ class UserRequestForm(forms.ModelForm):
             "phone_number": forms.TextInput(attrs={
                 'required': True,
                 'placeholder': '998900000000',
-                'value': '+998'
             }),
         }

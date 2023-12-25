@@ -138,6 +138,15 @@
 
 
 <script>
+    const phoneNumberField = document.getElementById('id_phone_number');
+    console.log(phoneNumberField)
+
+    phoneNumberField.addEventListener('input', function (event) {
+        const inputValue = event.target.value;
+        event.target.value = inputValue.replace(/\D/g, '');
+
+    });
+
     const russianInput = document.getElementById('passport-seria');
     const trackNumberInput = document.getElementById('track-number');
 
@@ -159,9 +168,7 @@
         }
     });
 
-    const confirmDataCheckbox = document.querySelector(
-        ".confirm__data-input"
-    );
+    const confirmDataCheckbox = document.querySelector(".confirm__data-input");
     const formBtn = document.querySelector(".form__btn");
     let isChecked = false;
 
