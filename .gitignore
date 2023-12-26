@@ -60,5 +60,5 @@ docs/_build/
 
 # PyBuilder
 target/
-core/static/
+static/
 logs/
