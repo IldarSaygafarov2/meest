@@ -35,7 +35,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'meest.pythonanywhere.com',
     '127.0.0.1',
-    '185.217.131.80'
+    '185.217.131.80',
+    'passport-myasia.uz'
 ]
 
 
