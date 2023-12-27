@@ -10,10 +10,10 @@ class Command(BaseCommand):
         with open(settings.BASE_DIR / 'data.json', mode='r', encoding='utf-8') as file:
             data = json.load(file)
 
+
         for item in data['rows']:
             try:
                 obj = UserRequest.objects.create(
-                    pk=item[0],
                     track_number=item[1],
                     fullname=item[2],
                     passport_series=item[3],

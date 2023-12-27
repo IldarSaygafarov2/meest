@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.utils import datetime_safe
+from django.utils import timezone
 from openpyxl import load_workbook, Workbook
 
 from .forms import UserRequestForm
@@ -14,6 +15,8 @@ def home(request):
     if request.method == "POST":
         form = UserRequestForm(data=request.POST)
         if form.is_valid():
+            form = form.save(commit=False)
+            form.created_at = timezone.now()
             form.save()
             messages.success(request, "Данные о получателе приняты")
             return redirect('home')
@@ -27,6 +30,8 @@ def home(request):
 
 
 def elements_view(request):
+    if not request.user.is_superuser:
+        return redirect('home')
     query = request.GET
     date_from = query.get('date_from')
     date_to = query.get('date_to')
@@ -70,6 +75,8 @@ def elements_view(request):
 
 
 def get_excel(request):
+    if not request.user.is_superuser:
+        return redirect('home')
     if request.method == 'POST':
         file = request.FILES.get('file-input')
         wb = load_workbook(file)

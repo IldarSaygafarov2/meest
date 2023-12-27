@@ -8,7 +8,7 @@ class UserRequest(models.Model):
     passport_number = models.CharField(verbose_name="Номер паспорта", max_length=12)
     pinfl = models.TextField(verbose_name="ПИНФЛ")
     phone_number = models.CharField(max_length=15, verbose_name="Номер телефона")
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.track_number}: {self.fullname}'
