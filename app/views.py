@@ -139,3 +139,8 @@ def save_elements_by_datetime(request, date_from='', date_to=''):
     df.to_excel(settings.BASE_DIR / 'app/static/datetime.xlsx')
 
     return render(request, 'app/result.html')
+
+
+def handle_page_not_found_404(request):
+
+    return redirect('home')
