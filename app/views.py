@@ -84,9 +84,9 @@ def get_excel(request):
         values = []
 
         result_wb = Workbook()
-        result_wb.save(settings.BASE_DIR / 'static/test.xlsx')
+        result_wb.save(settings.BASE_DIR / 'app/static/test.xlsx')
 
-        result_file = load_workbook(settings.BASE_DIR / 'static/test.xlsx')
+        result_file = load_workbook(settings.BASE_DIR / 'app/static/test.xlsx')
         result_file_ws = result_file.active
 
         # print(result_file_ws)
@@ -119,7 +119,7 @@ def get_excel(request):
 
             result_file_ws.append(elements)
 
-        result_file.save(settings.BASE_DIR / 'static/test.xlsx')
+        result_file.save(settings.BASE_DIR / 'app/static/test.xlsx')
     else:
         elements = UserRequest.objects.all().values_list('track_number', 'fullname', 'passport_series',
                                                          'passport_number', 'pinfl', 'phone_number')
@@ -136,7 +136,7 @@ def save_elements_by_datetime(request, date_from='', date_to=''):
     df = pd.DataFrame(list(elements),
                       columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
                       )
-    df.to_excel(settings.BASE_DIR / 'static/datetime.xlsx')
+    df.to_excel(settings.BASE_DIR / 'app/static/datetime.xlsx')
 
     return render(request, 'app/result.html')
 
