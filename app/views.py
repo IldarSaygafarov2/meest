@@ -78,52 +78,49 @@ def get_excel(request):
     if not request.user.is_superuser:
         return redirect('home')
     if request.method == 'POST':
+        file_path = settings.BASE_DIR / 'app/static/data.xlsx'
         file = request.FILES.get('file-input')
-        wb = load_workbook(file)
-        sheet_obj = wb.active
-        values = []
+        file_obj = pd.read_excel(file)
 
-        result_wb = Workbook()
-        result_wb.save(settings.BASE_DIR / 'app/static/test.xlsx')
+        df = pd.DataFrame(file_obj.values)
+        df.to_excel(file_path)
 
-        result_file = load_workbook(settings.BASE_DIR / 'app/static/test.xlsx')
-        result_file_ws = result_file.active
+        result = []
 
-        # print(result_file_ws)
-
-        for i in range(1, sheet_obj.max_row + 1):
-            cell_obj = sheet_obj.cell(row=i, column=1)
-            cell_obj2 = sheet_obj.cell(row=i, column=2)
-            values.append((cell_obj.value, cell_obj2.value))
-
-        for value in values:
+        for value in file_obj.values:
             elements = UserRequest.objects.filter(track_number=value[0])
 
             if elements.exists():
                 elements = elements.values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
-                # print('by track number', elements)
             else:
                 elements = UserRequest.objects.filter(phone_number=value[1]).values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
-                # print('by phone number', elements)
 
-            print('final elements', elements)
-            if elements is None:
-                result_file_ws.append((value[0], value[1]))
-                continue
-            else:
-                pass
+            if elements is not None:
+                result.append(elements)
 
-            result_file_ws.append(elements)
+        opened_file = pd.read_excel(file_path)
+        for item in opened_file.values:
+            a = None
+            for j in result:
+                if not item[1] in j:
+                    break
+                print(dir(item))
+                item.put(values=j[2:], indices=[2])
 
-        result_file.save(settings.BASE_DIR / 'app/static/test.xlsx')
-    else:
-        elements = UserRequest.objects.all().values_list('track_number', 'fullname', 'passport_series',
-                                                         'passport_number', 'pinfl', 'phone_number')
-        # print(elements)
+        print(opened_file)
+
+
+
+
+        # df = pd.DataFrame(
+        #     result,
+        #     columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
+        # )
+        # df.to_excel(settings.BASE_DIR / 'app/static/data.xlsx')
 
     return render(request, 'app/result.html')
 
@@ -142,5 +139,4 @@ def save_elements_by_datetime(request, date_from='', date_to=''):
 
 
 def handle_page_not_found_404(request):
-
     return redirect('home')
