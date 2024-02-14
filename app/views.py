@@ -94,33 +94,41 @@ def get_excel(request):
                 elements = elements.values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
+                # print('track number filtered', elements)
             else:
                 elements = UserRequest.objects.filter(phone_number=value[1]).values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
+                # print('phone_number filtered', elements)
 
             if elements is not None:
                 result.append(elements)
 
         opened_file = pd.read_excel(file_path)
-        for item in opened_file.values:
-            a = None
-            for j in result:
-                if not item[1] in j:
-                    break
-                print(dir(item))
-                item.put(values=j[2:], indices=[2])
+        res2 = []
+        for el in result:
+            res = []
+            for item in opened_file.values:
+                _, track_number, phone_number = item
+                if track_number not in el and phone_number not in el:
+                    res.append(list(item))
+                    continue
+            res.append(el)
+            res2.append(res)
 
-        print(opened_file)
+        test = []
+        for i in res2:
 
+            for j in range(len(i) - 1):
+                print(i[j+1])
 
+        # print(opened_file)
 
-
-        # df = pd.DataFrame(
-        #     result,
-        #     columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
-        # )
-        # df.to_excel(settings.BASE_DIR / 'app/static/data.xlsx')
+        df = pd.DataFrame(
+            result,
+            columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
+        )
+        df.to_excel(settings.BASE_DIR / 'app/static/result.xlsx')
 
     return render(request, 'app/result.html')
 
