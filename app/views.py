@@ -85,8 +85,7 @@ def get_excel(request):
         df = pd.DataFrame(file_obj.values)
         df.to_excel(file_path)
 
-        result = []
-
+        result = set()
         for value in file_obj.values:
             elements = UserRequest.objects.filter(track_number=value[0])
 
@@ -94,41 +93,43 @@ def get_excel(request):
                 elements = elements.values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
+
                 # print('track number filtered', elements)
             else:
-                elements = UserRequest.objects.filter(phone_number=value[1]).values_list(
+                if not value[1].is_integer():
+                    continue
+                elements = UserRequest.objects.filter(phone_number=int(value[1])).values_list(
                     'track_number', 'phone_number', 'passport_series',
                     'passport_number', 'pinfl', 'fullname').first()
-                # print('phone_number filtered', elements)
+                # print(elements)
 
             if elements is not None:
-                result.append(elements)
+                result.add(elements)
 
+        dict_result = {}
+        for item in result:
+            dict_result[item[0]] = item
+        print(dict_result)
         opened_file = pd.read_excel(file_path)
-        res2 = []
-        for el in result:
-            res = []
-            for item in opened_file.values:
-                _, track_number, phone_number = item
-                if track_number not in el and phone_number not in el:
-                    res.append(list(item))
-                    continue
-            res.append(el)
-            res2.append(res)
-
-        test = []
-        for i in res2:
-
-            for j in range(len(i) - 1):
-                print(i[j+1])
-
-        # print(opened_file)
-
+        res = []
+        for i in opened_file.values:
+            if i[1] in dict_result:
+                item = list(dict_result[i[1]])
+                item.remove(i[1])
+                item.remove(item[0])
+                test = list(i) + item
+                test.remove(test[0])
+                res.append(test)
+            else:
+                key = list(i)
+                key.remove(key[0])
+                res.append(key)
+        print(res)
         df = pd.DataFrame(
-            result,
+            list(res),
             columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
         )
-        df.to_excel(settings.BASE_DIR / 'app/static/result.xlsx')
+        df.to_excel(settings.BASE_DIR / 'app/static/test.xlsx')
 
     return render(request, 'app/result.html')
 
