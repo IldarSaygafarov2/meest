@@ -138,7 +138,7 @@ def save_elements_by_datetime(request, date_from='', date_to=''):
     elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to).values_list(
         'track_number', 'fullname', 'passport_series',
         'passport_number', 'pinfl', 'phone_number')
-
+    print(len(elements))
     df = pd.DataFrame(list(elements),
                       columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
                       )
