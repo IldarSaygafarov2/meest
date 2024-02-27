@@ -1,6 +1,8 @@
 import pandas as pd
 from django.conf import settings
 from django.contrib import messages
+
+from django.templatetags.static import static
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.utils import datetime_safe, timezone
@@ -83,21 +85,23 @@ def get_excel(request):
         wb = load_workbook(file)
         sheet_obj = wb.active
         values = []
+        static_url = static("test.xslx")
 
         result_wb = Workbook()
-        result_wb.save(settings.BASE_DIR / "app/static/test.xlsx")
+        result_wb.save(settings.BASE_DIR / "static/test.xlsx")
 
-        result_file = load_workbook(settings.BASE_DIR / "app/static/test.xlsx")
+        result_file = load_workbook(settings.BASE_DIR / "static/test.xlsx")
         result_file_ws = result_file.active
 
         # print(result_file_ws)
-
+        print(UserRequest.objects.filter(phone_number='+998917727722'))
         for i in range(1, sheet_obj.max_row + 1):
             cell_obj = sheet_obj.cell(row=i, column=1)
             cell_obj2 = sheet_obj.cell(row=i, column=2)
             values.append((cell_obj.value, cell_obj2.value))
 
         for value in values:
+            # print(value)
             elements = UserRequest.objects.filter(track_number=value[0])
 
             if elements.exists():
@@ -109,10 +113,15 @@ def get_excel(request):
                     "pinfl",
                     "fullname",
                 ).first()
-                print("by track number", elements)
+                # print("by track number", elements)
             else:
+
+                if not value[1]:
+                    continue
+
+                number = f'+{value[1]}'
                 elements = (
-                    UserRequest.objects.filter(phone_number=value[1])
+                    UserRequest.objects.filter(phone_number=number)
                     .values_list(
                         "track_number",
                         "phone_number",
@@ -123,18 +132,17 @@ def get_excel(request):
                     )
                     .first()
                 )
-                print("by phone number", elements)
+                # print(elements)
+                # print(f"phone_number={value[1]} by phone number {elements=}.")
 
-            print("final elements", elements)
             if elements is None:
+
                 result_file_ws.append((value[0], value[1]))
                 continue
-            else:
-                pass
-
+            # print("final elements", elements)
             result_file_ws.append(elements)
 
-        result_file.save(settings.BASE_DIR / "app/static/test.xlsx")
+        result_file.save(settings.BASE_DIR / "static/test.xlsx")
     else:
         elements = UserRequest.objects.all().values_list(
             "track_number",
