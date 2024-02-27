@@ -2,10 +2,9 @@ import pandas as pd
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
-from django.utils import datetime_safe
-from django.utils import timezone
-from openpyxl import load_workbook, Workbook
+from django.shortcuts import redirect, render
+from django.utils import datetime_safe, timezone
+from openpyxl import Workbook, load_workbook
 
 from .forms import UserRequestForm
 from .models import UserRequest
@@ -19,25 +18,24 @@ def home(request):
             form.created_at = timezone.now()
             form.save()
             messages.success(request, "Данные о получателе приняты")
-            return redirect('home')
+
+            return redirect("home")
     else:
         form = UserRequestForm()
 
-    context = {
-        "form": form
-    }
+    context = {"form": form}
     return render(request, "app/index.html", context)
 
 
 def elements_view(request):
     if not request.user.is_superuser:
-        return redirect('home')
+        return redirect("home")
     query = request.GET
-    date_from = query.get('date_from')
-    date_to = query.get('date_to')
+    date_from = query.get("date_from")
+    date_to = query.get("date_to")
     phone_number = query.get("phone_number")
     pinfl = query.get("pinfl")
-    query_fullname = query.get('fullname')
+    query_fullname = query.get("fullname")
     passport_series = query.get("passport_series")
     track_number = query.get("track_number")
 
@@ -52,100 +50,131 @@ def elements_view(request):
     elif pinfl:
         elements = UserRequest.objects.filter(pinfl__iregex=pinfl)
     elif date_from and date_to:
-        elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to)
+        elements = UserRequest.objects.filter(
+            created_at__gte=date_from, created_at__lte=date_to
+        )
     else:
         elements = UserRequest.objects.all()
 
     qs = Paginator(elements, 30)
-    page = request.GET.get('page')
+    page = request.GET.get("page")
     elements = qs.get_page(page)
 
     context = {
         "elements": elements,
-        "date_from": date_from if date_from else '',
+        "date_from": date_from if date_from else "",
         "date_to": date_to if date_to else datetime_safe.datetime.now().date(),
-        "phone_number": phone_number if phone_number else '',
-        "pinfl": pinfl if pinfl else '',
-        "query_fullname": query_fullname if query_fullname else '',
-        "passport_series": passport_series if passport_series else '',
-        "track_number": track_number if track_number else '',
+        "phone_number": phone_number if phone_number else "",
+        "pinfl": pinfl if pinfl else "",
+        "query_fullname": query_fullname if query_fullname else "",
+        "passport_series": passport_series if passport_series else "",
+        "track_number": track_number if track_number else "",
     }
 
     return render(request, "app/elements.html", context)
 
 
 def get_excel(request):
+
     if not request.user.is_superuser:
-        return redirect('home')
-    if request.method == 'POST':
-        file_path = settings.BASE_DIR / 'app/static/data.xlsx'
-        file = request.FILES.get('file-input')
-        file_obj = pd.read_excel(file)
+        return redirect("home")
+    if request.method == "POST":
+        file = request.FILES.get("file-input")
+        wb = load_workbook(file)
+        sheet_obj = wb.active
+        values = []
 
-        df = pd.DataFrame(file_obj.values)
-        df.to_excel(file_path)
+        result_wb = Workbook()
+        result_wb.save(settings.BASE_DIR / "app/static/test.xlsx")
 
-        result = set()
-        for value in file_obj.values:
+        result_file = load_workbook(settings.BASE_DIR / "app/static/test.xlsx")
+        result_file_ws = result_file.active
+
+        # print(result_file_ws)
+
+        for i in range(1, sheet_obj.max_row + 1):
+            cell_obj = sheet_obj.cell(row=i, column=1)
+            cell_obj2 = sheet_obj.cell(row=i, column=2)
+            values.append((cell_obj.value, cell_obj2.value))
+
+        for value in values:
             elements = UserRequest.objects.filter(track_number=value[0])
 
             if elements.exists():
                 elements = elements.values_list(
-                    'track_number', 'phone_number', 'passport_series',
-                    'passport_number', 'pinfl', 'fullname').first()
-
-                # print('track number filtered', elements)
+                    "track_number",
+                    "phone_number",
+                    "passport_series",
+                    "passport_number",
+                    "pinfl",
+                    "fullname",
+                ).first()
+                print("by track number", elements)
             else:
-                if not value[1].is_integer():
-                    continue
-                elements = UserRequest.objects.filter(phone_number=int(value[1])).values_list(
-                    'track_number', 'phone_number', 'passport_series',
-                    'passport_number', 'pinfl', 'fullname').first()
-                # print(elements)
+                elements = (
+                    UserRequest.objects.filter(phone_number=value[1])
+                    .values_list(
+                        "track_number",
+                        "phone_number",
+                        "passport_series",
+                        "passport_number",
+                        "pinfl",
+                        "fullname",
+                    )
+                    .first()
+                )
+                print("by phone number", elements)
 
-            if elements is not None:
-                result.add(elements)
-
-        dict_result = {}
-        for item in result:
-            dict_result[item[0]] = item
-        print(dict_result)
-        opened_file = pd.read_excel(file_path)
-        res = []
-        for i in opened_file.values:
-            if i[1] in dict_result:
-                item = list(dict_result[i[1]])
-                item.remove(i[1])
-                item.remove(item[0])
-                test = list(i) + item
-                test.remove(test[0])
-                res.append(test)
+            print("final elements", elements)
+            if elements is None:
+                result_file_ws.append((value[0], value[1]))
+                continue
             else:
-                key = list(i)
-                key.remove(key[0])
-                res.append(key)
-        print(res)
-        df = pd.DataFrame(
-            list(res),
-            columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
+                pass
+
+            result_file_ws.append(elements)
+
+        result_file.save(settings.BASE_DIR / "app/static/test.xlsx")
+    else:
+        elements = UserRequest.objects.all().values_list(
+            "track_number",
+            "fullname",
+            "passport_series",
+            "passport_number",
+            "pinfl",
+            "phone_number",
         )
-        df.to_excel(settings.BASE_DIR / 'app/static/test.xlsx')
 
-    return render(request, 'app/result.html')
+    return render(request, "app/result.html")
 
 
-def save_elements_by_datetime(request, date_from='', date_to=''):
-    elements = UserRequest.objects.filter(created_at__gte=date_from, created_at__lte=date_to).values_list(
-        'track_number', 'fullname', 'passport_series',
-        'passport_number', 'pinfl', 'phone_number')
+def save_elements_by_datetime(request, date_from="", date_to=""):
+    elements = UserRequest.objects.filter(
+        created_at__gte=date_from, created_at__lte=date_to
+    ).values_list(
+        "track_number",
+        "fullname",
+        "passport_series",
+        "passport_number",
+        "pinfl",
+        "phone_number",
+    )
     print(len(elements))
-    df = pd.DataFrame(list(elements),
-                      columns=['Трек номер', 'Ф.И.О', 'Серия паспорта', 'Номер паспорта', 'ПИНФЛ', 'Номер телефона']
-                      )
-    df.to_excel(settings.BASE_DIR / 'app/static/datetime.xlsx')
+    df = pd.DataFrame(
+        list(elements),
+        columns=[
+            "Трек номер",
+            "Ф.И.О",
+            "Серия паспорта",
+            "Номер паспорта",
+            "ПИНФЛ",
+            "Номер телефона",
+        ],
+    )
+    df.to_excel(settings.BASE_DIR / "app/static/datetime.xlsx")
 
-    return render(request, 'app/result.html')
+    return render(request, "app/result.html")
 
 
 def handle_page_not_found_404(request):
-    return redirect('home')
+    return redirect("home")
