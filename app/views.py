@@ -179,7 +179,7 @@ def save_elements_by_datetime(request, date_from="", date_to=""):
             "Номер телефона",
         ],
     )
-    df.to_excel(settings.BASE_DIR / "app/static/datetime.xlsx")
+    df.to_excel(settings.BASE_DIR / "static/datetime.xlsx")
 
     return render(request, "app/result.html")
 
