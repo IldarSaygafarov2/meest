@@ -1,10 +1,9 @@
 import pandas as pd
 from django.conf import settings
 from django.contrib import messages
-
-from django.templatetags.static import static
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
+from django.templatetags.static import static
 from django.utils import datetime_safe, timezone
 from openpyxl import Workbook, load_workbook
 
@@ -85,7 +84,6 @@ def get_excel(request):
         wb = load_workbook(file)
         sheet_obj = wb.active
         values = []
-        static_url = static("test.xslx")
 
         result_wb = Workbook()
         result_wb.save(settings.BASE_DIR / "static/test.xlsx")
@@ -94,14 +92,12 @@ def get_excel(request):
         result_file_ws = result_file.active
 
         # print(result_file_ws)
-        print(UserRequest.objects.filter(phone_number='+998917727722'))
         for i in range(1, sheet_obj.max_row + 1):
             cell_obj = sheet_obj.cell(row=i, column=1)
             cell_obj2 = sheet_obj.cell(row=i, column=2)
             values.append((cell_obj.value, cell_obj2.value))
 
         for value in values:
-            # print(value)
             elements = UserRequest.objects.filter(track_number=value[0])
 
             if elements.exists():
@@ -119,7 +115,7 @@ def get_excel(request):
                 if not value[1]:
                     continue
 
-                number = f'+{value[1]}'
+                number = f"+{value[1]}"
                 elements = (
                     UserRequest.objects.filter(phone_number=number)
                     .values_list(
@@ -132,6 +128,7 @@ def get_excel(request):
                     )
                     .first()
                 )
+                print(elements)
                 # print(elements)
                 # print(f"phone_number={value[1]} by phone number {elements=}.")
 
@@ -157,6 +154,12 @@ def get_excel(request):
 
 
 def save_elements_by_datetime(request, date_from="", date_to=""):
+    result_wb = Workbook()
+    result_wb.save(settings.BASE_DIR / "static/datetime.xlsx")
+
+    result_file = load_workbook(settings.BASE_DIR / "static/datetime.xlsx")
+    result_file_ws = result_file.active
+
     elements = UserRequest.objects.filter(
         created_at__gte=date_from, created_at__lte=date_to
     ).values_list(
@@ -167,19 +170,26 @@ def save_elements_by_datetime(request, date_from="", date_to=""):
         "pinfl",
         "phone_number",
     )
-    print(len(elements))
-    df = pd.DataFrame(
-        list(elements),
-        columns=[
-            "Трек номер",
-            "Ф.И.О",
-            "Серия паспорта",
-            "Номер паспорта",
-            "ПИНФЛ",
-            "Номер телефона",
-        ],
-    )
-    df.to_excel(settings.BASE_DIR / "static/datetime.xlsx")
+
+    for element in elements:
+        result_file_ws.append(element)
+
+    # result_file_ws.append(list(elements))
+    result_file.save(settings.BASE_DIR / "static/datetime.xlsx")
+
+
+    # df = pd.DataFrame(
+    #     list(elements),
+    #     columns=[
+    #         "Трек номер",
+    #         "Ф.И.О",
+    #         "Серия паспорта",
+    #         "Номер паспорта",
+    #         "ПИНФЛ",
+    #         "Номер телефона",
+    #     ],
+    # )
+    # df.to_excel(settings.BASE_DIR / "static/datetime.xlsx", engine="xlsxwriter")
 
     return render(request, "app/result.html")
 
