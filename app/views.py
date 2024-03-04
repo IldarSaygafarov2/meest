@@ -155,9 +155,9 @@ def get_excel(request):
 
 def save_elements_by_datetime(request, date_from="", date_to=""):
     result_wb = Workbook()
-    result_wb.save(settings.BASE_DIR / "static/datetime.xlsx")
+    result_wb.save(settings.BASE_DIR / "app/static/datetime.xlsx")
 
-    result_file = load_workbook(settings.BASE_DIR / "static/datetime.xlsx")
+    result_file = load_workbook(settings.BASE_DIR / "app/static/datetime.xlsx")
     result_file_ws = result_file.active
 
     elements = UserRequest.objects.filter(
@@ -175,7 +175,7 @@ def save_elements_by_datetime(request, date_from="", date_to=""):
         result_file_ws.append(element)
 
     # result_file_ws.append(list(elements))
-    result_file.save(settings.BASE_DIR / "static/datetime.xlsx")
+    result_file.save(settings.BASE_DIR / "app/static/datetime.xlsx")
 
 
     # df = pd.DataFrame(
