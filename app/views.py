@@ -178,6 +178,7 @@ def save_elements_by_datetime(request, date_from="", date_to=""):
     result_file.save(settings.BASE_DIR / "app/static/datetime.xlsx")
 
 
+
     # df = pd.DataFrame(
     #     list(elements),
     #     columns=[
@@ -191,7 +192,7 @@ def save_elements_by_datetime(request, date_from="", date_to=""):
     # )
     # df.to_excel(settings.BASE_DIR / "static/datetime.xlsx", engine="xlsxwriter")
 
-    return render(request, "app/result.html")
+    return render(request, "app/result.html", context={'elements': elements, 'total': elements.count()})
 
 
 def handle_page_not_found_404(request):
