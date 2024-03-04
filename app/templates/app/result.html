@@ -36,7 +36,7 @@
 
         {% else %}
 
-            <a href="{{ request.META.HTTP_HOST }}/app/static/datetime.xlsx" download class="exsel-btn">Скачать файл</a>
+            <a href="{% static 'datetime.xlsx' %}" download class="exsel-btn">Скачать файл</a>
             <a href="{% url 'elements' %}" class="exsel-btn">
                 Обратно к списку
             </a>
